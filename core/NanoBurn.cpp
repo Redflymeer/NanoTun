@@ -1,10 +1,26 @@
 #include "NanoBurn.h"
-#include <net/if.h>  // TUN
-#include <sodium.h>  // Sodium
-#include "simple_base64.h"  // Decoder
+#include "simple_base64.h"
+#include <iostream>
 
-bool ss_start(const std::string& uri) {
-    // sodium_init(); chacha20poly1305_encrypt()
-    // tun_setup("tun0"); proxy_loop();
-    return true;  // TODO
+namespace NanoTun {
+SSConfig NanoBurn::config_;
+bool NanoBurn::running_ = false;
+
+bool NanoBurn::init(const SSConfig& config) {
+    config_ = config;
+    std::cout << "NanoBurn SS: " << config.server 
+              << ":" << config.port << "\n";
+    return true;
+}
+
+bool NanoBurn::start() {
+    running_ = true;
+    std::cout << "NanoBurn started\n";
+    return true;
+}
+
+void NanoBurn::stop() {
+    running_ = false;
+    std::cout << "NanoBurn stopped\n";
+}
 }
