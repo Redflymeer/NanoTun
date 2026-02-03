@@ -1,7 +1,7 @@
-#include "core/NanoBurn.h"
+#include "NanoBurn.h"
 #include <net/if.h>  // TUN
 #include <sodium.h>  // Sodium
-#include "core/simple_base64.h"  // Decoder
+#include "simple_base64.h"  // Decoder
 
 bool ss_start(const std::string& uri) {
     // sodium_init(); chacha20poly1305_encrypt()
