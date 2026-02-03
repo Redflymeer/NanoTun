@@ -30,7 +30,8 @@ public:
     static void stop();
     
 private:
-    static Config config_;
+    static SSConfig ss_config_;      // ← Только SS пока
+    static VlessConfig vless_config_; 
     static bool running_;
 };
 }
