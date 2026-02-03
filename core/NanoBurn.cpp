@@ -5,8 +5,6 @@
 
 namespace NanoTun {
 
-bool NanoBurn::running_ = false;
-
 // SS парсер
 SSConfig NanoBurn::parse_ss_url(const std::string& ss_url) {
     SSConfig config;
@@ -55,6 +53,8 @@ VlessConfig NanoBurn::parse_vless_url(const std::string& vless_url) {
     return config;
 }
 
+bool NanoBurn::running_ = false;
+
 // Init
 bool NanoBurn::init(const SSConfig& ss) {
     std::cout << "SS: " << ss.method << "@" << ss.server 
@@ -68,12 +68,18 @@ bool NanoBurn::init(const VlessConfig& vless) {
               << " flow=" << vless.flow << "\n";
     return true;
 }
-
 bool NanoBurn::start() {
     running_ = true;
     std::cout << "NanoBurn VPN started\n";
+    
+   
+    while (running_) {
+        std::cout << "[VPN] Proxy active... (Ctrl+C для выхода)\r";
+        sleep(1);
+    }
     return true;
 }
+
 
 void NanoBurn::stop() {
     running_ = false;
