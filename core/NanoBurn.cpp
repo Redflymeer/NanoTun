@@ -2,6 +2,7 @@
 #include "simple_base64.h"
 #include <iostream>
 #include <cstring>
+#include <unistd.h>
 
 namespace NanoTun {
 
