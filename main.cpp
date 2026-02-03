@@ -1,4 +1,4 @@
-#include "сore/NanoBurn.h"
+#include "core/NanoBurn.h"
 #include <iostream>
 int main(int argc, char** argv) {
     if (argc != 2) { std::cout << "Usage: ./NanoTun 'ss://...'\n"; return 1; }
