@@ -1,6 +1,8 @@
 #include <iostream>
 #include <gtkmm.h>
-
+#include <thread>
+#include <chrono>
+#include <iomanip>
 
 
 // Основное окно
@@ -10,6 +12,10 @@ public:
       // Базовые настройки
       set_name("NanoTun 260426");
       set_default_size(712, 712);
+
+      // Креэйты
+      auto mmenu_model = Gio::Menu::create();
+      auto mactions = Gio::SimpleActionGroup::create();
       
       // Кнопка
       mconnect.set_label("N");
@@ -23,6 +29,8 @@ public:
             std::cout << log << "Disconnecting\n";
          }
       });
+      
+
 
       // Фрэйм
       mframe.set_size_request(200, 200);
@@ -31,19 +39,52 @@ public:
       mframe.set_child(mconnect);
       mvbox.append(mframe);
       
-
+      
 
       // Бокс
       mvbox.set_spacing(6);
       mvbox.set_orientation(Gtk::Orientation::VERTICAL);
       set_child(mvbox);
+
+      // Меню !!!
+      // топбар
+      mtopbar.set_orientation(Gtk::Orientation::HORIZONTAL);
+      mtopbar.set_spacing(6);
+      mvbox.append(mtopbar);
+
+      // Кнопка для меню
+      mmenu_button.set_label("#");
+      mmenu_popover.set_menu_model(mmenu_model);
+      mmenu_button.set_popover(mmenu_popover);
+
+      insert_action_group("win", mactions);
+
+
+      // Добавляем действия 
+      mactions->add_action("settings", sigc::mem_fun(*this, &Window::settings));
+      mactions->add_action("groups", sigc::mem_fun(*this, &Window::groups));
+      mactions->add_action("confscreen", sigc::mem_fun(*this, &Window::confscreen));
+      
+
+      // Аппендим 
+      mmenu_model->append("Settings", "win.settings");
+      mmenu_model->append("Groups", "win.groups");
+      mmenu_model->append("Settings", "win.confscreen");
+      mtopbar.append(mmenu_button);
    }
 
 private:
    // Начальный экран
-   Gtk::Box mvbox{Gtk::Orientation::VERTICAL, 6};
+   Gtk::Box mvbox{Gtk::Orientation::VERTICAL, 6}, mtopbar{Gtk::Orientation::HORIZONTAL, 6};
    Gtk::Frame mframe;
    Gtk::ToggleButton mconnect;
+   Gtk::MenuButton mmenu_button;
+   Gtk::PopoverMenu mmenu_popover;
+
+   // Действия 
+   void settings() { std::cout << log << "Settings opened\n"; }
+   void groups() { std::cout << log << "Groups opened\n"; }
+   void confscreen() { std::cout << log << "Conf screen opened\n"; }
 
    // Прочее от gtkmm
    std::string log = "[LOG] ";
