@@ -1,8 +1,17 @@
 #include <iostream>
 #include <gtkmm.h>
-#include <thread>
-#include <chrono>
-#include <iomanip>
+#include <memory>
+
+// Окно настроек
+class SettingsWindow : public Gtk::Window {
+public:
+   SettingsWindow() {
+      set_title("Settings");
+      set_default_size(1000,1000);
+   }
+};
+
+
 
 
 // Основное окно
@@ -10,7 +19,7 @@ class Window : public Gtk::Window {
 public:
    Window() {
       // Базовые настройки
-      set_name("NanoTun 260426");
+      set_name("NanoTun 280426");
       set_default_size(712, 712);
 
       // Креэйты
@@ -82,13 +91,27 @@ private:
    Gtk::PopoverMenu mmenu_popover;
 
    // Действия 
-   void settings() { std::cout << log << "Settings opened\n"; }
+   void settings() { 
+      std::cout << log << "Settings opened\n";
+      // Окно настроек (забрал у иишки)
+      auto settings_win = std::make_unique<SettingsWindow>();
+      settings_win->set_transient_for(*this);
+      settings_win->show();
+      // Сейв окна
+      swin_save = std::move(settings_win);
+   }
+
+   
+   std::unique_ptr<SettingsWindow> swin_save;
+
+
    void groups() { std::cout << log << "Groups opened\n"; }
    void confscreen() { std::cout << log << "Conf screen opened\n"; }
 
    // Прочее от gtkmm
    std::string log = "[LOG] ";
 };
+
 
 
 
