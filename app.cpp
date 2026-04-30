@@ -6,22 +6,65 @@
 #include <iostream>
 #include <gtkmm.h>
 #include <memory>
+#include <vector>
+
 
 // [ОКНО НАСТРОЕК]
 class SettingsWindow : public Gtk::Window {
 public:
    SettingsWindow() {
       set_title("Settings");
-      set_default_size(1000,1000);
+      set_default_size(1000,700);
+      // [АППЕНДЫ]
+      box.append(language_label);
+      box.append(language);
+
+      // [ЯЗЫКИ]
+      const std::vector<Glib::ustring> langs {
+         "English", "Russia"
+      };
+
+      
+      langlist = Gtk::StringList::create(langs);
+      language.set_model(langlist);
+      language.set_selected(0);
+      
+      language.property_selected().signal_changed().connect(sigc::mem_fun(*this, &SettingsWindow::language_changed));
+
+
+      language.set_size_request(100, -1);
+      language.set_expand(false);
+
+      language_label.set_text("Language");
+
+      // [БОКСЫ]
+      box.set_spacing(6);
+      box.set_orientation(Gtk::Orientation::VERTICAL);
+      set_child(box);
+   }
+private:
+   Gtk::Box box{Gtk::Orientation::VERTICAL, 6};
+   Gtk::Frame frame_for_language;
+   Gtk::DropDown language;
+   Glib::RefPtr<Gtk::StringList> langlist;
+   Gtk::Label language_label;
+
+
+
+   void language_changed() {
+      const auto selected = language.get_selected();
+      std::cout << "Language changed on row" << selected << std::endl;
    }
 };
 
+
+// [ОКНО ГРУПП]
 
 class GroupsWindow : public Gtk::Window {
 public:
    GroupsWindow() {
       set_title("Groups");
-      set_default_size(1000,1000);
+      set_default_size(1000,700);
    }
 };
 
@@ -32,7 +75,7 @@ class ConfigWindow : public Gtk::Window {
 public:
    ConfigWindow() {
       set_title("Configuration Window");
-      set_default_size(1000,1000);
+      set_default_size(1000,700);
       
 
        // [АППЕНДЫ]
@@ -77,7 +120,7 @@ class Window : public Gtk::Window {
 public:
    Window() {
       // Базовые настройки
-      set_name("NanoTun 290426");
+      set_name("NanoTun 300426");
       set_default_size(712, 712);
       
 
@@ -89,7 +132,8 @@ public:
       menu_model->append("Settings", "win.settings");
       menu_model->append("Groups", "win.groups"); 
       menu_model->append("Conf Screen", "win.confscreen");
-      vbox.append(frame2connect);
+      center_box.append(button2connect);
+      vbox.append(center_box);
 
 
 
@@ -98,6 +142,9 @@ public:
       menu_button.set_label("#");
       menu_button.set_popover(menu_popover);
       insert_action_group("win", actions);
+      menu_button.set_halign(Gtk::Align::START);
+      menu_button.set_expand(false);
+
 
       // Добавляем действия 
       actions->add_action("settings", sigc::mem_fun(*this, &Window::settings));
@@ -110,13 +157,11 @@ public:
       button2connect.set_label("N");
       // Сигнал на переключение
       button2connect.signal_toggled().connect(sigc::mem_fun(*this, &Window::connect));
+      // Положение
+      button2connect.set_halign(Gtk::Align::CENTER);
+      button2connect.set_expand(false);
+      button2connect.set_size_request(200,200);
       
-      
-      // [ФРЭЙМ]
-      frame2connect.set_size_request(200, 200);
-      frame2connect.set_halign(Gtk::Align::CENTER);
-      frame2connect.set_expand(false);
-      frame2connect.set_child(button2connect);
 
       // [БОКСЫ]
       // VBOX
@@ -126,11 +171,18 @@ public:
       // TOPBAR
       topbar.set_orientation(Gtk::Orientation::HORIZONTAL);
       topbar.set_spacing(6);
+      // CENTER_BOX
+      center_box.set_orientation(Gtk::Orientation::VERTICAL);
+      center_box.set_spacing(6);
+      // Центрируем
+      center_box.set_hexpand(true);
+      center_box.set_halign(Gtk::Align::CENTER);
+
    }
 
 private:
    // [ОПРЕДЕЛЕНИЕ]
-   Gtk::Box vbox{Gtk::Orientation::VERTICAL, 6}, topbar{Gtk::Orientation::HORIZONTAL, 6};
+   Gtk::Box vbox{Gtk::Orientation::VERTICAL, 6}, topbar{Gtk::Orientation::HORIZONTAL, 6}, center_box{Gtk::Orientation::VERTICAL, 6};
    Gtk::Frame frame2connect;
    Gtk::ToggleButton button2connect;
    Gtk::MenuButton menu_button;
