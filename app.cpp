@@ -37,7 +37,60 @@ static Glib::ustring trim(const Glib::ustring& s) {
 class SettingsWindow : public Gtk::Window {
 public:
    SettingsWindow() {
-      set_title("Settings");
+     
+      std::ifstream language_file{ "src/language.json" };
+      std::string language_str;
+
+      language_file.seekg(0, std::ios::end);
+      auto size = language_file.tellg();
+      language_file.seekg(0, std::ios::beg);
+      
+
+      language_str.resize(static_cast<size_t>(size));
+      if (size > 0) {
+         language_file.read(&language_str[0], size);
+      } 
+
+
+      // Если строка пкста или ошибка чтения
+      if (!language_file || language_str.empty()) {
+         language_str.clear();
+      }
+      
+
+      // Если json не сломался
+      std::string lang = "";
+
+      
+      try {
+         if (!language_str.empty()) {
+            auto language_parse = json::parse(language_str);
+            lang = language_parse.value("language", "");
+         }
+      }  catch (const json::parse_error& e) {
+            std::cout << LOG_STR << ERR_STR << "Failed with parse json, e.what log: " << e.what() << "\n";
+            close();
+            return;
+         }
+     
+      // Если все ок
+      if (lang == "english") {
+         set_title("Settings");
+         std::cout << LOG_STR << "Succefuly renamed Settings Window to english\n";
+         language_label.set_text("Language");
+         std::cout << LOG_STR << "Succefuly renamed DropDown label to english\n";
+      } else if (lang == "russian") {
+         set_title("Настройки");
+         std::cout << LOG_STR << "Succefuly renamed Settings Window to russian\n";
+         language_label.set_text("Языки");
+         std::cout << LOG_STR << "Succefuly renamed DropDown label to russian\n";
+      } else {
+         set_title("Settings");
+         std::cout << LOG_STR << "Nothing in language.json, setted default\n";
+         language_label.set_label("Language");
+      }
+
+
       set_default_size(1000, 700);
 
 
@@ -66,7 +119,6 @@ public:
       // Стили
       language.set_size_request(100, -1);
       language.set_expand(false);
-      language_label.set_text("Language");
       
 
       // Boxes
@@ -86,9 +138,29 @@ private:
 
    // Functions
    void language_changed() {
-      // Заметка: нужно продолжить
-      const auto selected = language.get_selected();
-      std::cout << "Language changed on row" << selected << std::endl;
+      // Elements
+      const auto row = language.get_selected();
+      std::ofstream language_file{ "src/language.json" };
+      
+      // Если язык выбран английский
+      if (row == 0) {
+         json language_json = {
+            {"language", "english"}
+         };
+
+         
+         language_file << language_json << "\n";
+         std::cout << LOG_STR << "Language setted english!\n";
+      } else {
+         json language_json = {
+            {"language", "russian"}
+         };
+
+
+         language_file << language_json << "\n";
+         std::cout << LOG_STR << "Language setted russian!\n";
+      }
+      language_file.close();
    }
 };
 
@@ -96,7 +168,127 @@ private:
 class AddGroupWindow : public Gtk::Window {
 public:
    AddGroupWindow() {
-      set_title("Add Group");
+      std::ifstream language_file{ "src/language.json" };
+      std::string language_str;
+
+      language_file.seekg(0, std::ios::end);
+      auto size = language_file.tellg();
+      language_file.seekg(0, std::ios::beg);
+      
+
+      language_str.resize(static_cast<size_t>(size));
+      if (size > 0) {
+         language_file.read(&language_str[0], size);
+      } 
+
+
+      // Если строка пкста или ошибка чтения
+      if (!language_file || language_str.empty()) {
+         language_str.clear();
+      }
+      
+
+      // Если json не сломался
+      std::string lang = "";
+
+      
+      try {
+         if (!language_str.empty()) {
+            auto language_parse = json::parse(language_str);
+            lang = language_parse.value("language", "");
+         }
+      }  catch (const json::parse_error& e) {
+            std::cout << LOG_STR << ERR_STR << "Failed with parse json, e.what log: " << e.what() << "\n";
+            close();
+            return;
+         }
+
+      if (lang == "english") {
+         set_title("Add Group");
+         std::cout << LOG_STR << "Succefly renamed Add Groups Window to english\n";
+
+
+         // Entry
+         Entry_Name.set_placeholder_text("example: My Subscribe");
+         Entry_Url.set_placeholder_text("Url");
+
+
+         // Label
+         Label_Name.set_text("Name of group*");
+         Label_Url.set_text("Url to your VPN");
+         Label_Auto_Update.set_text("Auto Update");
+         Label_Auto_Update_Interval.set_text("Auto Update interval* (Only if you setted Auto Update Yes)");
+         
+
+         // Confirm button
+         Confirm.set_label("Confirm");
+
+
+         // DropDown list
+         const std::vector <Glib::ustring> Auto_Update_Choice {
+            "No", "Yes"
+         };
+         
+         Auto_Update_List = Gtk::StringList::create(Auto_Update_Choice);
+
+      }  else if (lang == "russian") {
+         set_title("Добавить группу");
+         std::cout << LOG_STR << "Succefly renamed Add Group Window to russian\n";
+
+
+         // Entry
+         Entry_Name.set_placeholder_text("пример: Моя Подписка");
+         Entry_Url.set_placeholder_text("Ссылка");
+      
+
+         // Label
+         Label_Name.set_text("Имя группы*");
+         Label_Url.set_text("Ссылка на твой ВПН"); 
+         Label_Auto_Update.set_text("Авто обновление");
+         Label_Auto_Update_Interval.set_text("Интервал авто обновления* (Только если ты выбрал в Авто обновлении Да)");
+
+
+         // Confirm Button
+         Confirm.set_label("Подтвердить");
+
+
+         // DropDown list
+         const std::vector <Glib::ustring> Auto_Update_Choice {
+            "Нет", "Да"
+         };
+         
+
+         Auto_Update_List = Gtk::StringList::create(Auto_Update_Choice);
+
+      }  else {
+         set_title("Add Group");
+         std::cout << LOG_STR << "Nothing in language.json, setted default\n";
+
+
+         // Entry
+         Entry_Name.set_placeholder_text("example: My Subscribe");
+         Entry_Url.set_placeholder_text("Url");
+
+
+         // Label
+         Label_Name.set_text("Name of group*");
+         Label_Url.set_text("Url to your VPN");
+         Label_Auto_Update.set_text("Auto Update");
+         Label_Auto_Update_Interval.set_text("Auto Update interval* (Only if you setted Auto Update Yes)");
+         
+
+         // Confirm button
+         Confirm.set_label("Confirm");
+
+
+         // DropDown list
+         const std::vector <Glib::ustring> Auto_Update_Choice {
+            "No", "Yes"
+         };
+         
+         Auto_Update_List = Gtk::StringList::create(Auto_Update_Choice);
+      }
+
       set_default_size(500, 500);
       set_resizable(false);
 
@@ -114,13 +306,10 @@ public:
       
 
       // Entry
-      Entry_Name.set_placeholder_text("Name"); 
-      Entry_Url.set_placeholder_text("https://");
       Entry_Auto_Update_Interval.set_placeholder_text("5");
       
 
       // Confirm Button
-      Confirm.set_label("Confirm");
       Confirm.set_expand(false);
       Confirm.set_size_request(200, 50);
       Confirm.set_halign(Gtk::Align::CENTER);
@@ -132,20 +321,9 @@ public:
       );
       
 
-      // Labels
-      Label_Name.set_text("Name");
-      Label_Url.set_text("Url");
-      Label_Auto_Update.set_text("Auto update");
-      Label_Auto_Update_Interval.set_text("Auto Update Interval");
       
       // DropDown
       // Что будет в Auto_Update_Drop_Down 
-      const std::vector<Glib::ustring> Auto_Update_Choice {
-         "No", "Yes"
-      };
-      
-
-      Auto_Update_List = Gtk::StringList::create(Auto_Update_Choice);
       Auto_Update_Drop_Down.set_model(Auto_Update_List);
       Auto_Update_Drop_Down.set_selected(0);
       Auto_Update_Drop_Down.set_expand(false);
@@ -279,7 +457,53 @@ private:
 class GroupsWindow : public Gtk::Window {
 public:
    GroupsWindow() {
-      set_title("Groups");
+      std::ifstream language_file{ "src/language.json" };
+      std::string language_str;
+
+      language_file.seekg(0, std::ios::end);
+      auto size = language_file.tellg();
+      language_file.seekg(0, std::ios::beg);
+      
+
+      language_str.resize(static_cast<size_t>(size));
+      if (size > 0) {
+         language_file.read(&language_str[0], size);
+      } 
+
+
+      // Если строка пкста или ошибка чтения
+      if (!language_file || language_str.empty()) {
+         language_str.clear();
+      }
+      
+
+      // Если json не сломался
+      std::string lang = "";
+
+      
+      try {
+         if (!language_str.empty()) {
+            auto language_parse = json::parse(language_str);
+            lang = language_parse.value("language", "");
+         }
+      }  catch (const json::parse_error& e) {
+            std::cout << LOG_STR << ERR_STR << "Failed with parse json, e.what log: " << e.what() << "\n";
+            close();
+            return;
+         }
+
+      if (lang == "english") {
+         set_title("Groups");
+         std::cout << LOG_STR << "Renamed Group Window title to english\n";
+      } else if (lang == "russian") {
+         set_title("Группы");
+         std::cout << LOG_STR << "Renamed Group Window title to russian\n";
+      } else {
+         set_title("Groups");
+         std::cout << LOG_STR << "Nothing in language.json, setted default\n";
+      }
+
+
       set_default_size(1000, 700);
       
 
@@ -474,7 +698,53 @@ private:
 class ConfigWindow : public Gtk::Window {
 public:
    ConfigWindow() {
-      set_title("Configuration Window");
+      std::ifstream language_file{ "src/language.json" };
+      std::string language_str;
+
+      language_file.seekg(0, std::ios::end);
+      auto size = language_file.tellg();
+      language_file.seekg(0, std::ios::beg);
+      
+
+      language_str.resize(static_cast<size_t>(size));
+      if (size > 0) {
+         language_file.read(&language_str[0], size);
+      } 
+
+
+      // Если строка пкста или ошибка чтения
+      if (!language_file || language_str.empty()) {
+         language_str.clear();
+      }
+      
+
+      // Если json не сломался
+      std::string lang = "";
+
+      
+      try {
+         if (!language_str.empty()) {
+            auto language_parse = json::parse(language_str);
+            lang = language_parse.value("language", "");
+         }
+      }  catch (const json::parse_error& e) {
+            std::cout << LOG_STR << ERR_STR << "Failed with parse json, e.what log: " << e.what() << "\n";
+            close();
+            return;
+         }
+
+      if (lang == "english") {
+         set_title("Configurations menu");
+         std::cout << LOG_STR << "Renamed Configurations Window title to english\n";
+      } else if (lang == "russian") {
+         set_title("Меню конфигов");
+         std::cout << LOG_STR << "Renamed Configurations Window title to russian\n";
+      } else {
+         set_title("Configurations menu");
+         std::cout << LOG_STR << "Nothing in language.json, setted default\n";
+      }
+
+
       set_default_size(1000, 700);
       
 
@@ -512,6 +782,55 @@ private:
 class Window : public Gtk::Window {
 public:
    Window() {
+      // Создаем файл языков
+      std::ifstream language_file{ "src/language.json" };
+      if (!language_file) {
+         std::cout << LOG_STR << ERR_STR << "src/language.json is doesn't exist, creating\n";
+         std::ofstream language_file_out{ "src/language.json" };
+         language_file_out.close();
+         language_file.open("src/language.json");
+         std::cout << LOG_STR << "Created src/language.json\n";
+      }
+      
+
+      std::string language_str;
+
+      language_file.seekg(0, std::ios::end);
+      auto size = language_file.tellg();
+      language_file.seekg(0, std::ios::beg);
+      
+
+      language_str.resize(static_cast<size_t>(size));
+      if (size > 0) {
+         language_file.read(&language_str[0], size);
+      } 
+
+
+      // Если строка пкста или ошибка чтения
+      if (!language_file || language_str.empty()) {
+         language_str.clear();
+      }
+      
+
+      // Если json не сломался
+      std::string lang = "";
+
+      
+      try {
+         if (!language_str.empty()) {
+            auto language_parse = json::parse(language_str);
+            lang = language_parse.value("language", "");
+         }
+      }  catch (const json::parse_error& e) {
+            std::cout << LOG_STR << ERR_STR << "Failed with parse json, e.what log: " << e.what() << "\n";
+            close();
+            return;
+         }
+      
+
+      
+
+      // Базовые настройки
       set_title("NanoTun 020526");
       set_default_size(712, 712);
       
