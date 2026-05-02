@@ -14,7 +14,13 @@
 #include <charconv>
 #include <exception>
 
+
+
+
 using json = nlohmann::json;
+
+
+
 
 // Есть ли строки в переменной
 static Glib::ustring trim(const Glib::ustring& s) {
@@ -23,6 +29,9 @@ static Glib::ustring trim(const Glib::ustring& s) {
     auto end = s.find_last_not_of(" \t\n\r");
     return s.substr(start, end - start + 1);
 }
+
+
+
 
 // Окно настроек
 class SettingsWindow : public Gtk::Window {
@@ -280,7 +289,7 @@ public:
       
       
       // Создаем .json файл и делаем загрузку всего из add_group_json (AddGroupWindow)
-      json_create("groups.json");
+      json_create("src/groups.json");
       
 
       // Add Group Button
@@ -309,17 +318,17 @@ public:
    // 273
    void json_create(const std::string& path) {
       // Заходим в файл
-      std::ifstream groups_file("groups.json");
+      std::ifstream groups_file("src/groups.json");
 
 
       // Если нету файла
       if (!groups_file.is_open()) {
          std::cout << LOG_STR << ERR_STR << "groups.json doesn't exist\n";
          std::cout << LOG_STR << "Creating groups.json\n";
-         std::ofstream groups_file_ofstream("groups.json", std::ios::app);
+         std::ofstream groups_file_ofstream("src/groups.json", std::ios::app);
          groups_file_ofstream.close();
-         groups_file.open("groups.json");
-         std::cout << LOG_STR << "File created!\n";
+         groups_file.open("src/groups.json");
+         std::cout << LOG_STR << "File created groups.json!\n";
       }
 
       
@@ -399,7 +408,7 @@ public:
    // Deleting line function 
    void delete_line(std::string_view line_to_delete) {
       // Elements
-      std::ifstream groups_file("groups.json");
+      std::ifstream groups_file("src/groups.json");
       std::vector<std::string> preserved;
       std::string line;
 
@@ -417,7 +426,7 @@ public:
       
 
       // Врайтим
-      std::ofstream groups_file_out("groups.json");
+      std::ofstream groups_file_out("src/groups.json");
 
 
       for (const auto& saved : preserved) {
@@ -503,7 +512,7 @@ private:
 class Window : public Gtk::Window {
 public:
    Window() {
-      set_title("NanoTun 010526");
+      set_title("NanoTun 020526");
       set_default_size(712, 712);
       
 
