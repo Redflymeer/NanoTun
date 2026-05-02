@@ -1,7 +1,7 @@
 # NanoTun
 __ВПН Конфигуратор__
 <div align="center">
-  <img src="src/github.images/NanoTunPrieview.png" width="45%">  
+  <img src="src/github.images/NanoTunPreview.png" width="45%">  
   <img src="src/github.images/screenshot_from_app.png" width="45%">
 </div>
 
