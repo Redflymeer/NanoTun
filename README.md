@@ -1,6 +1,10 @@
 # NanoTun
 __ВПН Конфигуратор__
-![[src/github.images/NanoTunPrewiew.png]]![[src/github.images/screenshot_from_app.png]]
+<div align="center">
+  <img src="src/github.images/NanoTunPrieview.png" width="45%">  
+  <img src="src/github.images/screensgot_from_app.png" width="45%">
+</div>
+
 
 ### Главные фишки 👻
 - __2__ Ядра для впн (Xray и Singbox) которые могут работать в 2 режимах - Автоматический (приложение само выбирает для которых Xray, а для которых Singbox)
