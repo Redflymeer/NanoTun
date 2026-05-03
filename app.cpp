@@ -373,7 +373,7 @@ private:
       Glib::ustring auto_update_interval_ustring = Entry_Auto_Update_Interval.get_text();
       const auto dropdown_row = Auto_Update_Drop_Down.get_selected();
       int auto_update_interval_int = 0;
-      std::ofstream groups_file("groups.json", std::ios::app);
+      std::ofstream groups_file("src/groups.json", std::ios::app);
       json add_group_json;
       
 
