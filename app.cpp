@@ -827,11 +827,13 @@ public:
             return;
          }
       
+      
+      
 
       
 
       // Базовые настройки
-      set_title("NanoTun 020526");
+      set_title("NanoTun Testing");
       set_default_size(712, 712);
       
 
@@ -844,12 +846,21 @@ public:
       vbox.append(hbox);
       hbox.append(menu_button);
 
-      
-      // Menu model appends
-      menu_model->append("Settings", "win.settings");
-      menu_model->append("Groups", "win.groups");
-      menu_model->append("Conf Screen", "win.confscreen");
+      if (lang == "english") {
+         menu_model->append("Settings", "win.settings");
+         menu_model->append("Groups", "win.groups");
+         menu_model->append("Configurations", "win.configurations");
 
+      }  else if (lang == "russian") { 
+         menu_model->append("Настройки", "win.settings");
+         menu_model->append("Группы", "win.groups");
+         menu_model->append("Конфиги", "win.configurations");
+      }  else { 
+         menu_model->append("Settings", "win.settings");
+         menu_model->append("Groups", "win.groups");
+         menu_model->append("Configurations", "win.configurations");
+      }
+      
 
       // Center box Appends
       cbox.append(connect_button);
@@ -872,8 +883,7 @@ public:
       // Actions
       actions->add_action("settings", sigc::mem_fun(*this, &Window::settings));
       actions->add_action("groups", sigc::mem_fun(*this, &Window::groups));
-      actions->add_action("confscreen", sigc::mem_fun(*this, &Window::confscreen));
-      
+      actions->add_action("configurations", sigc::mem_fun(*this, &Window::configurations));      
 
       // Menu Popover
       menu_popover.set_menu_model(menu_model);
@@ -938,7 +948,7 @@ public:
 
 
    // Создаем окно кофигов
-   void confscreen() {
+   void configurations() {
       // LOG
       std::cout << LOG_STR << "Conf screen opened\n";
 
