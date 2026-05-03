@@ -956,8 +956,10 @@ public:
    void connect() {
       if (connect_button.get_active()) {
          std::cout << LOG_STR << "Connect button toggled (connecting)\n";
+         connect_button.set_label("И");
       } else {
          std::cout << LOG_STR << "Connect button toggled (disconnecting)\n";
+         connect_button.set_label("N");
       }
    }
 
