@@ -38,7 +38,7 @@ class SettingsWindow : public Gtk::Window {
 public:
    SettingsWindow() {
      
-      std::ifstream language_file{ "src/language.json" };
+      std::ifstream language_file{ "src/json-dir/language.json" };
       std::string language_str;
 
       language_file.seekg(0, std::ios::end);
@@ -140,7 +140,7 @@ private:
    void language_changed() {
       // Elements
       const auto row = language.get_selected();
-      std::ofstream language_file{ "src/language.json" };
+      std::ofstream language_file{ "src/json-dir/language.json" };
       
       // Если язык выбран английский
       if (row == 0) {
@@ -168,7 +168,7 @@ private:
 class AddGroupWindow : public Gtk::Window {
 public:
    AddGroupWindow() {
-      std::ifstream language_file{ "src/language.json" };
+      std::ifstream language_file{ "src/json-dir/language.json" };
       std::string language_str;
 
       language_file.seekg(0, std::ios::end);
@@ -373,7 +373,7 @@ private:
       Glib::ustring auto_update_interval_ustring = Entry_Auto_Update_Interval.get_text();
       const auto dropdown_row = Auto_Update_Drop_Down.get_selected();
       int auto_update_interval_int = 0;
-      std::ofstream groups_file("src/groups.json", std::ios::app);
+      std::ofstream groups_file("src/json-dir/groups.json", std::ios::app);
       json add_group_json;
       
 
@@ -457,7 +457,7 @@ private:
 class GroupsWindow : public Gtk::Window {
 public:
    GroupsWindow() {
-      std::ifstream language_file{ "src/language.json" };
+      std::ifstream language_file{ "src/json-dir/language.json" };
       std::string language_str;
 
       language_file.seekg(0, std::ios::end);
@@ -513,7 +513,7 @@ public:
       
       
       // Создаем .json файл и делаем загрузку всего из add_group_json (AddGroupWindow)
-      json_create("src/groups.json");
+      json_create("src/json-dir/groups.json");
       
 
       // Add Group Button
@@ -542,16 +542,16 @@ public:
    // 273
    void json_create(const std::string& path) {
       // Заходим в файл
-      std::ifstream groups_file("src/groups.json");
+      std::ifstream groups_file("src/json-dir/groups.json");
 
 
       // Если нету файла
       if (!groups_file.is_open()) {
          std::cout << LOG_STR << ERR_STR << "groups.json doesn't exist\n";
          std::cout << LOG_STR << "Creating groups.json\n";
-         std::ofstream groups_file_ofstream("src/groups.json", std::ios::app);
+         std::ofstream groups_file_ofstream("src/json-dir/groups.json", std::ios::app);
          groups_file_ofstream.close();
-         groups_file.open("src/groups.json");
+         groups_file.open("src/json-dir/groups.json");
          std::cout << LOG_STR << "File created groups.json!\n";
       }
 
@@ -632,7 +632,7 @@ public:
    // Deleting line function 
    void delete_line(std::string_view line_to_delete) {
       // Elements
-      std::ifstream groups_file("src/groups.json");
+      std::ifstream groups_file("src/json-dir/groups.json");
       std::vector<std::string> preserved;
       std::string line;
 
@@ -650,7 +650,7 @@ public:
       
 
       // Врайтим
-      std::ofstream groups_file_out("src/groups.json");
+      std::ofstream groups_file_out("src/json-dir/groups.json");
 
 
       for (const auto& saved : preserved) {
@@ -698,7 +698,7 @@ private:
 class ConfigWindow : public Gtk::Window {
 public:
    ConfigWindow() {
-      std::ifstream language_file{ "src/language.json" };
+      std::ifstream language_file{ "src/json-dir/language.json" };
       std::string language_str;
 
       language_file.seekg(0, std::ios::end);
@@ -783,13 +783,13 @@ class Window : public Gtk::Window {
 public:
    Window() {
       // Создаем файл языков
-      std::ifstream language_file{ "src/language.json" };
+      std::ifstream language_file{ "src/json-dir/language.json" };
       if (!language_file) {
          std::cout << LOG_STR << ERR_STR << "src/language.json is doesn't exist, creating\n";
-         std::ofstream language_file_out{ "src/language.json" };
+         std::ofstream language_file_out{ "src/json-dir/language.json" };
          language_file_out.close();
-         language_file.open("src/language.json");
-         std::cout << LOG_STR << "Created src/language.json\n";
+         language_file.open("src/json-dir/language.json");
+         std::cout << LOG_STR << "Created src/json-dir/language.json\n";
       }
       
 
