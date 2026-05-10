@@ -22,7 +22,7 @@ using json = nlohmann::json;
 
 
 
-// Есть ли строки в переменной
+// Is var empty?
 static Glib::ustring trim(const Glib::ustring& s) {
     auto start = s.find_first_not_of(" \t\n\r");
     if (start == Glib::ustring::npos) return {};
@@ -33,7 +33,7 @@ static Glib::ustring trim(const Glib::ustring& s) {
 
 
 
-// Окно настроек
+// Settings Window
 class SettingsWindow : public Gtk::Window {
 public:
    SettingsWindow() {
@@ -52,13 +52,13 @@ public:
       } 
 
 
-      // Если строка пкста или ошибка чтения
+      // If string is returned error / empty 
       if (!language_file || language_str.empty()) {
          language_str.clear();
       }
       
 
-      // Если json не сломался
+      // if json is not returned error 
       std::string lang = "";
 
       
@@ -73,7 +73,7 @@ public:
             return;
          }
      
-      // Если все ок
+      // If ok
       if (lang == "english") {
          set_title("Settings");
          std::cout << LOG_STR << "Succefuly renamed Settings Window to english\n";
@@ -99,8 +99,7 @@ public:
       box.append(language);
 
 
-      // Языки
-      // То что у нас будет в language
+      // Languages 
       const std::vector<Glib::ustring> langs {
          "English", "Russia"
       };
@@ -116,7 +115,7 @@ public:
       );
       
 
-      // Стили
+      // Styles 
       language.set_size_request(100, -1);
       language.set_expand(false);
       
@@ -142,7 +141,7 @@ private:
       const auto row = language.get_selected();
       std::ofstream language_file{ "src/json-dir/language.json" };
       
-      // Если язык выбран английский
+      // if english 
       if (row == 0) {
          json language_json = {
             {"language", "english"}
@@ -164,7 +163,7 @@ private:
    }
 };
 
-// Окно добавления группы
+// Add group window 
 class AddGroupWindow : public Gtk::Window {
 public:
    AddGroupWindow() {
@@ -182,13 +181,13 @@ public:
       } 
 
 
-      // Если строка пкста или ошибка чтения
+      // If string returned error / empty
       if (!language_file || language_str.empty()) {
          language_str.clear();
       }
       
 
-      // Если json не сломался
+      // If json is not returned error
       std::string lang = "";
 
       
@@ -323,7 +322,6 @@ public:
 
       
       // DropDown
-      // Что будет в Auto_Update_Drop_Down 
       Auto_Update_Drop_Down.set_model(Auto_Update_List);
       Auto_Update_Drop_Down.set_selected(0);
       Auto_Update_Drop_Down.set_expand(false);
@@ -378,7 +376,7 @@ private:
       
 
       // DropDown
-      // Если DropDown на втором ряду 
+      // If auto update turned 
       if (dropdown_row == 1) {
          if (!auto_update_interval_ustring.empty()) {
             // Elements if function
@@ -386,7 +384,7 @@ private:
             auto [ptr, ec] = std::from_chars(
                str.data(), str.data() + str.size(), auto_update_interval_int
             );
-            // Если введено больше интегера(2147483647) или некорректный ввод (только цифры)
+            // if is more than integer(2147483647) or non correct input
             if (ec != std::errc()) {
                std::cout << LOG_STR << ERR_STR << "Non correct input or more then int\n";
                close();
@@ -395,7 +393,7 @@ private:
          }
          
 
-         // Если интервал обновлений меньше или 0
+         // if interval is less than 0 or equals 0
          if (auto_update_interval_int <= 0) {
             std::cout << LOG_STR << ERR_STR << "0 is not good variant for auto update\n";
             close();
@@ -403,35 +401,35 @@ private:
          }
 
 
-         // Если имя группы пустое
+         // If name of group is empty
          auto name = trim(Entry_Name.get_text());
          if (name.empty()) {
-            std::cout << LOG_STR << ERR_STR << "Needs name\n";
+            std::cout << LOG_STR << ERR_STR << "Name is empty\n";
             close();
             return;
          }
          
 
-         // Делаем .json по нашим характеристикам
+         // Making .json
          add_group_json = {
             {"name", std::string(name_ustring)},
             {"url", std::string(url_ustring)},
             {"autoupdate", true},
             {"autoupdateinterval", auto_update_interval_int}
          };
-      } else { // Если в DropDown выбран первый ряд
+      } else { // if auto update is turned off
          auto name = trim(Entry_Name.get_text());
 
 
-         // Если имя группы пустое
+         // If name of group is empty
          if (name.empty()) {
-            std::cout << LOG_STR << ERR_STR << "Needs name\n";
+            std::cout << LOG_STR << ERR_STR << "Name is empty\n";
             close();
             return;
          }
          
 
-         // Делаем .json по нашим характеристикам
+         // Making .json
          add_group_json = {
             {"name", std::string(name_ustring)},
             {"url", std::string(url_ustring)},
@@ -442,11 +440,11 @@ private:
       }
       
 
-      // Добавляем в файл
+      // Apendding changes to file
       groups_file << add_group_json << "\n";
       groups_file.close();
-      // Закрываем окно
-      destroy();
+      // closing window 
+      close();
    }
 };
 
@@ -471,13 +469,13 @@ public:
       } 
 
 
-      // Если строка пкста или ошибка чтения
+      // If string returned error / empty
       if (!language_file || language_str.empty()) {
          language_str.clear();
       }
       
 
-      // Если json не сломался
+      // If json is not returned error
       std::string lang = "";
 
       
@@ -512,7 +510,7 @@ public:
       scroll.set_child(box);
       
       
-      // Создаем .json файл и делаем загрузку всего из add_group_json (AddGroupWindow)
+      // Making .json file and writting 
       json_create("src/json-dir/groups.json");
       
 
@@ -541,11 +539,11 @@ public:
 
    // 273
    void json_create(const std::string& path) {
-      // Заходим в файл
+      // Reading file
       std::ifstream groups_file("src/json-dir/groups.json");
 
 
-      // Если нету файла
+      // If file is non exists
       if (!groups_file.is_open()) {
          std::cout << LOG_STR << ERR_STR << "groups.json doesn't exist\n";
          std::cout << LOG_STR << "Creating groups.json\n";
@@ -556,24 +554,24 @@ public:
       }
 
       
-      // Строчки
+      // lines
       std::string line;
       std::size_t lines_read = 0;
       
 
-      // Берем из .json имя группы и URL
+      // Getting from .json name of group and url 
       while (std::getline(groups_file, line)) {
-         // Если линия пуста
+         // If line is empty
          if (line.empty()) continue;
 
 
-         // Если линий много
+         // If lines is more than 1000
          if (++lines_read > 1000) break;
          
 
-         // Главная функция цикла
+         // Main function of cycle
          try {
-            // Переменная для парсинга
+            // string of parsed line
             json item = json::parse(line);
             
 
@@ -581,7 +579,7 @@ public:
             std::string name = item.value("name", "");
             std::string url = item.value("url", "");
            
-            // Создаем элементы иммено для этого цикла
+            // Making elements only for it line
             auto* url_label = Gtk::make_managed<Gtk::Label>();
             auto* delete_button = Gtk::make_managed<Gtk::Button>();
             auto* change_button = Gtk::make_managed<Gtk::Button>();
@@ -591,7 +589,7 @@ public:
             );
             
 
-            // Ставим текст
+            // Making text
             url_label->set_text(url);
             delete_button->set_label("-");
             change_button->set_label("✎");
@@ -620,7 +618,7 @@ public:
             );
 
          } catch (...) {
-            // Если парсинг не удался
+            // If parsing return error
             std::cout << LOG_STR << ERR_STR << "Dont correct parsing\n";
             return;
          }
@@ -637,19 +635,19 @@ public:
       std::string line;
 
 
-      // Цикл сбора линий
+      // Cycle of deleting line 
       while (std::getline(groups_file, line)) {
          if (line.empty()) continue;
 
 
-         // Если линия равна той которую нужно удалить
+         // if line is line to delete 
          if (line != line_to_delete) {
             preserved.push_back(line);
          }
       }
       
 
-      // Врайтим
+      // Writting
       std::ofstream groups_file_out("src/json-dir/groups.json");
 
 
@@ -658,7 +656,7 @@ public:
       }
 
 
-      // Закрываем
+      // Closining
       groups_file_out.close();
       
 
@@ -681,7 +679,7 @@ private:
       std::cout << LOG_STR << "Add Group Window clicked\n";
 
 
-      // Сохраняем окно
+      // Sabing window
       auto addgroup_win = std::make_unique<AddGroupWindow>();
       addgroup_win->set_transient_for(*this);
       addgroup_win->show();
@@ -694,7 +692,7 @@ private:
 
 
 
-// Окно конфигов
+// Configurations window
 class ConfigWindow : public Gtk::Window {
 public:
    ConfigWindow() {
@@ -712,13 +710,13 @@ public:
       } 
 
 
-      // Если строка пкста или ошибка чтения
+      // If string is returned error / empty 
       if (!language_file || language_str.empty()) {
          language_str.clear();
       }
       
 
-      // Если json не сломался
+      // If json ok
       std::string lang = "";
 
       
@@ -765,7 +763,6 @@ public:
    
 
 
-   // 487
    void add_signal() {
       std::cout << LOG_STR << "Add button toggled\n";
    }
@@ -778,11 +775,11 @@ private:
    Gtk::Box vbox{Gtk::Orientation::VERTICAL, 6};
 };
 
-// Основное окно
+// Main window
 class Window : public Gtk::Window {
 public:
    Window() {
-      // Создаем файл языков
+      // Making language json
       std::ifstream language_file{ "src/json-dir/language.json" };
       if (!language_file) {
          std::cout << LOG_STR << ERR_STR << "src/language.json is doesn't exist, creating\n";
@@ -806,13 +803,13 @@ public:
       } 
 
 
-      // Если строка пкста или ошибка чтения
+      // If string is returned error / empty
       if (!language_file || language_str.empty()) {
          language_str.clear();
       }
       
 
-      // Если json не сломался
+      // If json ok
       std::string lang = "";
 
       
@@ -832,12 +829,12 @@ public:
 
       
 
-      // Базовые настройки
+      // Main settings
       set_title("NanoTun Testing");
       set_default_size(712, 712);
       
 
-      // Переменные
+      // Strings
       auto actions = Gio::SimpleActionGroup::create();
       auto menu_model = Gio::Menu::create();
 
@@ -918,13 +915,13 @@ public:
 
 
 
-   // Создание окна настроек
+   // Making settings window
    void settings() {
       // LOG
       std::cout << LOG_STR << "Settings opened\n";
 
 
-      // Создаем окно
+      // Making window
       auto settings_win = std::make_unique<SettingsWindow>();
       settings_win->set_transient_for(*this);
       settings_win->show();
@@ -933,13 +930,13 @@ public:
    
 
 
-   // Создание окна групп
+   // Making groups window
    void groups() {
       // LOG
       std::cout << LOG_STR << "Groups opened\n";
 
 
-      // Создаем окно
+      // Making window
       auto groups_win = std::make_unique<GroupsWindow>();
       groups_win->set_transient_for(*this);
       groups_win->show();
@@ -947,13 +944,13 @@ public:
    }
 
 
-   // Создаем окно кофигов
+   // Making configuration screen
    void configurations() {
       // LOG
       std::cout << LOG_STR << "Conf screen opened\n";
 
 
-      // Создаем окно
+      // Making window
       auto configure_screen_win = std::make_unique<ConfigWindow>();
       configure_screen_win->set_transient_for(*this);
       configure_screen_win->show();
@@ -962,7 +959,7 @@ public:
 
 
 
-   // Коннект
+   // Connect
    void connect() {
       if (connect_button.get_active()) {
          std::cout << LOG_STR << "Connect button toggled (connecting)\n";
@@ -983,7 +980,7 @@ private:
    Gtk::PopoverMenu menu_popover;
    
 
-   // Сохраняем окна
+   // Saving windows
    std::unique_ptr<SettingsWindow> settings_win_save;
    std::unique_ptr<GroupsWindow> groups_win_save;
    std::unique_ptr<ConfigWindow> configure_win_save;
@@ -991,7 +988,7 @@ private:
 
 
 
-// Мэйн, запускатор
+// Starting
 int main(int argc, char* argv[]) {
    auto app = Gtk::Application::create("testing.nanotun.vpn");
    return app->make_window_and_run<Window>(argc, argv);
